@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  .container {
+    max-width: 1200px;
+
+    margin: 0 auto;
+    margin-top: 30px;
+    /* background-image: url('/img/天氣背景2.png');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.4; */
+
+
+  }
+
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content:space-between; */
+    text-align: center;
+
+
+  }
+
+  .weathercard {
+    width: 15%;
+    margin: 5px;
+    padding: 10px 20px;
+    border-radius: 10px 10px 10px 10px;
+    font-family: '微軟正黑體';
+    border: 1px solid;
+    background-image: url('./天氣狀況包/天氣背景.jpg');
+    background-size: contain;
+    opacity: 0.6;
+  }
+  .weathercard:hover{
+
+    opacity: 1;
+  }
+  .weathercard h1 {
+    background-color: rgb(4, 4, 77);
+    border-radius: 10px;
+    color: white;
+  }
+
+  .weathercard h2 {
+    color: white;
+  }
+
+  .weathercard p {
+    color: white;
+  }
+</style>
+
+<body>
+<img src="" alt="">
+
+  <div class="container">
+
+    <div class="cards">
+      <!-- <div class="weathercard">
+        <h1>台中市</h1>
+        <h2>晴天</h2>
+        <p>氣溫:25~30度</p>
+        <p>降雨量:0%
+        </p>
+      </div>
+    
+      <div class="weathercard">
+          <h1>台中市</h1>
+          <h2>晴天</h2>
+          <p>氣溫:25~30度</p>
+          <p>降雨量:0%
+          </p>
+        </div>
+
+        <div class="weathercard">
+            <h1>台中市</h1>
+            <h2>晴天</h2>
+            <p>氣溫:25~30度</p>
+            <p>降雨量:0%
+            </p>
+          </div> -->
+
+
+
+    </div>
+  </div>
+
+
+
+  <script>
+    fetch(
+        'https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWB-B5282D9D-8FDD-40E9-AD48-B1DF3270465D'
+      )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (weatherdata) {
+        console.log(weatherdata);
+
+        var cards = document.querySelector('.cards');
+
+
+
+        var locations = weatherdata.records.location; //把22比地區資訊放到locations陣列中
+
+
+
+
+
+        locations.forEach(location => { //locations陣列做forEach把每一筆data抓出丟到location
+
+
+
+
+          var values = location.weatherElement[0].time[0].parameter.parameterValue;
+          var wx = location.weatherElement[0].time[0].parameter.parameterName;
+          var maxT = location.weatherElement[4].time[0].parameter.parameterName;
+          var minT = location.weatherElement[2].time[0].parameter.parameterName; //把原始資料丟到一個變數
+          var PoP = location.weatherElement[1].time[0].parameter.parameterName;
+
+          var img;
+          if (values === "1") {
+            img = "./天氣狀況包/太陽.jpg"
+          } //晴天
+          else if (values === "2") {
+            img = "./天氣狀況包/晴時多雲.jpg"
+          } // 晴時多雲
+          else if (values === "4") {
+            img = "./天氣狀況包/多雲.jpg"
+          } //多雲
+          else if (values === "11") {
+            img = "./天氣狀況包/下雨.jpg"
+          } //陣雨
+          else {
+            img = "./天氣狀況包/太陽.jpg"
+          }
+
+          // console.log(values)
+
+
+
+
+
+                                                                //+=新的家舊的:innerhtml會覆蓋前資料
+          cards.innerHTML += `<div class="weathercard">       
+                              <h1>${location.locationName}</h1>
+                              <img src="${img}">
+                              <p>氣溫${ minT}~${maxT}度</p>
+                              <p>降雨率:${PoP}%</p>`;
+
+        });
+
+      });
+    console.log(location);
+  </script>
+</body>
+
+</html>
